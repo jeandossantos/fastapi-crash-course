@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fastapi-crash-course"
+version = "0.1.0"
+description = ""
+authors = ["Jean F. dos Santos <jeanddg@hotmail.com>"]
+readme = "README.md"
+packages = [{include = "fastapi_crash_course"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.101.0"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+sqlalchemy = "^2.0.19"
+psycopg2-binary = "^2.9.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
