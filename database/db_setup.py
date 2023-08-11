@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -24,3 +25,22 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+# ASYNC POSTGRES/SQLALCHEMY CONFIG
+####################################
+ASYNC_SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:94198380@localhost:5430/fastapi_course"
+
+async_engine = create_async_engine(
+    ASYNC_SQLALCHEMY_DATABASE_URL
+)
+
+AsyncSessionLocal = sessionmaker(
+    async_engine, class_=AsyncSession, expire_on_commit=False
+)
+
+
+async def async_get_db():
+    async with AsyncSessionLocal() as db:
+        yield db
+        await db.commit()

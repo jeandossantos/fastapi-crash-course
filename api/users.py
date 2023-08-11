@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from database.db_setup import get_db
+from database.db_setup import get_db, async_get_db
+
 from pydantic_schema.user import UserCreate, User
 from .utils.users import create_user, get_user, get_user_by_email, get_users
+from .utils.courses import get_courses_by_user
 
 routes = APIRouter()
 
@@ -16,9 +19,14 @@ def list_user(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return users
 
 
+@routes.get('/users/{user_id}/courses')
+def list_courses_by_user(user_id: int, db: Session = Depends(get_db)):
+    return get_courses_by_user(db=db, user_id=user_id)
+
+
 @routes.get('/users/{id}', response_model=User)
-def get_user_by_id(id: int, db: Session = Depends(get_db)):
-    user = get_user(db, id)
+async def get_user_by_id(id: int, db: AsyncSession = Depends(async_get_db)):
+    user = await get_user(db, id)
 
     if user is None:
         raise HTTPException(404, 'User not Found')
